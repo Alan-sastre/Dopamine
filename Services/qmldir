@@ -1,0 +1,5 @@
+module Services
+
+singleton Audio     1.0 Audio.qml
+singleton Clock     1.0 Clock.qml
+singleton HyprCtl   1.0 Hyprland.qml
