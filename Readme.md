@@ -3,9 +3,11 @@
 
 <font size="3">**⚠️​Warning⚠️**: This version (0.1.0) is a work in progress and may not be fully functional.</font>
 
-<video controls width="700">
-  <source src="./assets/Video/Dopaminev0.1.0.mp4" type="video/mp4">
-</video>
+
+
+https://github.com/user-attachments/assets/b859d6b8-571d-4a83-b7d5-2dd701205121
+
+
 
 Dopamine is a modern Desktop shell for Quickshell. It is designed to be easy to customize and extend, while providing a clean and modern interface. 
 
