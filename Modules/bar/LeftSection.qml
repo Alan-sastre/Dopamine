@@ -46,6 +46,9 @@ Item {
         anchors.centerIn: parent
         spacing: Colors.spacingSm
 
+        // Botón del launcher de apps
+        LauncherButton {}
+
         Repeater {
             // Mostrar al menos minWorkspaces, o más si hay ventanas abiertas
             model: {
@@ -129,6 +132,33 @@ Item {
             onWheel: event => {
                 root.focusWorkspaceRelative(event.angleDelta.y > 0 ? -1 : 1)
             }
+        }
+    }
+
+    // ── Botón del launcher ───────────────────────────────────────
+    component LauncherButton: Rectangle {
+        id: launchBtn
+
+        width:  22
+        height: 20
+        radius: Colors.radiusSm
+
+        color: hoverLauncher.hovered ? Colors.overlay : "transparent"
+
+        Behavior on color { ColorAnimation { duration: Colors.animFast } }
+
+        Text {
+            anchors.centerIn: parent
+            text:           "󰀻"
+            font.family:    Colors.fontFamily
+            font.pixelSize: Colors.iconSize
+            color:          hoverLauncher.hovered ? Colors.accent : Colors.textMuted
+        }
+
+        HoverHandler { id: hoverLauncher }
+
+        TapHandler {
+            onTapped: Svc.Launcher.toggle()
         }
     }
 }

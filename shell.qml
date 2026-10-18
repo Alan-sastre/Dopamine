@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "./Modules/bar"
+import "./Widgets"
 
 // Dopamine Shell — entrada principal
 // Instancia una Bar por cada monitor conectado
@@ -19,4 +20,7 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // Launcher de aplicaciones (una sola instancia, sobre el monitor enfocado)
+    Launcher {}
 }

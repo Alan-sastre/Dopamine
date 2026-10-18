@@ -13,12 +13,32 @@ Item {
 
     property var audio: Svc.Audio
     property var clock: Svc.Clock
+    property var system: Svc.SystemInfo
 
     // ── Contenido ────────────────────────────────────────────────
     Row {
         id: rightRow
         anchors.centerIn: parent
         spacing: Colors.spacingSm
+
+        // ── CPU ──────────────────────────────────────────────────
+        StatChip {
+            icon:  "󰻠"
+            value: Math.round(system.cpuUsage) + "%"
+        }
+
+        // ── RAM ──────────────────────────────────────────────────
+        StatChip {
+            icon:  "󰍛"
+            value: Math.round(system.memUsage) + "%"
+        }
+
+        // ── Batería (solo si existe) ─────────────────────────────
+        StatChip {
+            icon:    system.batteryIcon
+            value:   Math.round(system.batteryPercent) + "%"
+            visible: system.hasBattery
+        }
 
         // ── Control de volumen ───────────────────────────────────
         Item {
@@ -122,6 +142,40 @@ Item {
             font.family:    Colors.fontFamily
             font.pixelSize: Colors.fontSizeSm
             color:          Colors.textMuted
+        }
+    }
+
+    // ── Chip de indicador (icono + valor) ────────────────────────
+    component StatChip: Item {
+        id: chip
+
+        property string icon
+        property string value
+
+        width:  chipRow.implicitWidth + Colors.spacingSm
+        height: Colors.barHeight - 8
+        anchors.verticalCenter: parent.verticalCenter
+
+        Row {
+            id: chipRow
+            anchors.centerIn: parent
+            spacing: 3
+
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text:           chip.icon
+                font.family:    Colors.fontFamily
+                font.pixelSize: Colors.fontSizeMd
+                color:          Colors.textMuted
+            }
+
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text:           chip.value
+                font.family:    Colors.fontFamily
+                font.pixelSize: Colors.fontSizeSm
+                color:          Colors.text
+            }
         }
     }
 }
