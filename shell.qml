@@ -8,12 +8,14 @@ ShellRoot {
     id: root
 
     // Variants crea una instancia de Bar por cada pantalla disponible.
-    // Quickshell inyecta `modelData` (la pantalla) automáticamente en cada instancia.
+    // `modelData` (la pantalla) se inyecta solo si el delegate lo declara
+    // como `required property` (requisito de Variants en Quickshell 0.3.x).
     Variants {
         model: Quickshell.screens
 
         Bar {
             // Cada instancia recibe su pantalla correspondiente
+            required property var modelData
             screen: modelData
         }
     }

@@ -9,7 +9,7 @@ PanelWindow {
     id: bar
 
     // Tamaño y anclaje
-    height: Colors.barHeight
+    implicitHeight: Colors.barHeight
     anchors {
         top:   true
         left:  true

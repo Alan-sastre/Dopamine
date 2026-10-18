@@ -15,6 +15,31 @@ Item {
     // Cuántos workspaces mostrar como mínimo (aunque estén vacíos)
     readonly property int minWorkspaces: 5
 
+    // ── Helpers ──────────────────────────────────────────────────
+
+    // Devuelve el workspace con ese id, o null si no existe
+    function workspaceById(id) {
+        for (const ws of Hyprland.workspaces.values)
+            if (ws.id === id) return ws
+        return null
+    }
+
+    // Cambia de workspace respetando el modo (Lua o hyprlang) de Hyprland
+    function focusWorkspace(id) {
+        if (Hyprland.usingLua)
+            Hyprland.dispatch(`hl.dsp.focus({ workspace = "${id}" })`)
+        else
+            Hyprland.dispatch("workspace " + id)
+    }
+
+    // Cambia de workspace de forma relativa (+1 / -1)
+    function focusWorkspaceRelative(delta) {
+        if (Hyprland.usingLua)
+            Hyprland.dispatch(`hl.dsp.focus({ workspace = "${delta > 0 ? "+" : ""}${delta}" })`)
+        else
+            Hyprland.dispatch("workspace " + (delta > 0 ? "r+" + delta : "r" + delta))
+    }
+
     // ── Workspaces ───────────────────────────────────────────────
     Row {
         id: workspacesRow
@@ -25,7 +50,7 @@ Item {
             // Mostrar al menos minWorkspaces, o más si hay ventanas abiertas
             model: {
                 let maxId = root.minWorkspaces
-                for (const ws of Hyprland.workspaces) {
+                for (const ws of Hyprland.workspaces.values) {
                     if (ws.id > maxId) maxId = ws.id
                 }
                 return maxId
@@ -35,10 +60,8 @@ Item {
                 wsId:     modelData + 1
                 isActive: Hyprland.focusedMonitor?.activeWorkspace?.id === (modelData + 1)
                 hasWindows: {
-                    for (const ws of Hyprland.workspaces) {
-                        if (ws.id === modelData + 1) return ws.windowCount > 0
-                    }
-                    return false
+                    const ws = root.workspaceById(modelData + 1)
+                    return ws ? ws.toplevels.values.length > 0 : false
                 }
             }
         }
@@ -98,16 +121,13 @@ Item {
         HoverHandler { id: hoverHandler }
 
         TapHandler {
-            onTapped: Hyprland.dispatch("workspace " + wsBtn.wsId)
+            onTapped: root.focusWorkspace(wsBtn.wsId)
         }
 
         // Scroll para cambiar workspace
         WheelHandler {
             onWheel: event => {
-                if (event.angleDelta.y > 0)
-                    Hyprland.dispatch("workspace r-1")
-                else
-                    Hyprland.dispatch("workspace r+1")
+                root.focusWorkspaceRelative(event.angleDelta.y > 0 ? -1 : 1)
             }
         }
     }
